@@ -7,6 +7,7 @@ public class Card {
     private double balance;
     private int cardTypeID;
     private int userID;
+    private CardType cardType;
 
     public Card(String cardNumber, String PIN, double balance, int cardTypeID, int userID) {
         this.cardNumber = cardNumber;
@@ -59,5 +60,13 @@ public class Card {
 
     public void setUserID(int userID) {
         this.userID = userID;
+    }
+
+    public CardType getCardType() {
+        return cardType;
+    }
+
+    public void setCardType(CardType cardType) {
+        this.cardType = cardType;
     }
 }

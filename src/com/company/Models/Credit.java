@@ -9,6 +9,7 @@ public class Credit {
     private Date endDate;
     private float percent;
     private double fullAmount;
+    private double loanBalance;
 
     public Credit(int userID, Date startDate, Date endDate, float percent, double fullAmount) {
         this.userID = userID;
@@ -18,9 +19,10 @@ public class Credit {
         this.fullAmount = fullAmount;
     }
 
-    public Credit(int creditID, int userID, Date startDate, Date endDate, float percent, double fullAmount) {
+    public Credit(int creditID, int userID, Date startDate, Date endDate, float percent, double fullAmount, double loanBalance) {
         this(userID, startDate, endDate, percent, fullAmount);
         this.creditID = creditID;
+        this.loanBalance = loanBalance;
     }
 
     public int getCreditID() {
@@ -65,5 +67,13 @@ public class Credit {
 
     public void setFullAmount(double fullAmount) {
         this.fullAmount = fullAmount;
+    }
+
+    public double getLoanBalance() {
+        return loanBalance;
+    }
+
+    public void setLoanBalance(double loanBalance) {
+        this.loanBalance = loanBalance;
     }
 }

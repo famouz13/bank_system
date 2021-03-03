@@ -8,6 +8,17 @@ import java.sql.SQLException;
 
 
 public class PostgresDB implements IDB {
+    private PostgresDB() {
+    }
+
+    private static class PostgressDBSingleton {
+        public static final PostgresDB db = new PostgresDB();
+    }
+
+    public static PostgresDB getInstance() {
+        return PostgressDBSingleton.db;
+    }
+
     @Override
     public Connection getConnection() throws SQLException, ClassNotFoundException {
         //path to database
@@ -21,5 +32,6 @@ public class PostgresDB implements IDB {
             throw e;
         }
     }
+
 }
 

@@ -26,6 +26,7 @@ public class User {
 
     /**
      * this constructor used for retrieving users from database
+     *
      * @param id
      * @param iin
      * @param firstName
@@ -35,6 +36,12 @@ public class User {
     public User(int id, String iin, String firstName, String lastName, String phone) {
         this(iin, firstName, lastName, phone);
         this.userID = id;
+    }
+
+    public User(int id, String firstName, String lastName) {
+        this.userID = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public int getUserID() {
