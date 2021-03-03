@@ -1,6 +1,4 @@
 package com.company.Models;
 
-public class User {
-
-
+public class Card {
 }
