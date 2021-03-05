@@ -118,6 +118,23 @@ public class _DAL {
             }
         }
 
+        public static String getPINByCardNumber(String cardNumber) {
+            try (var conn = PostgresDB.getInstance().getConnection()) {
+                PreparedStatement prt = conn.prepareStatement("SELECT PIN from Cards WHERE CardNumber = ?");
+                prt.setString(1, cardNumber);
+
+                ResultSet rs = prt.executeQuery();
+                if (rs.next()) {
+                    return rs.getString(1);
+                }
+
+                return null;
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+                return null;
+            }
+        }
+
         /**
          * @param userID  id of user which want to get new card
          * @param newCard card instance with initialized cardNumber, pin, cardTypeID, userID fields
