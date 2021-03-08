@@ -1,12 +1,14 @@
 package com.company;
 
 import com.company.DataAccessLayer._DAL;
+import com.company.ServiceLayer._SL;
 
 public class Main {
 
     public static void main(String[] args) {
-	// write your code here
-    var dal = _DAL.Users.byCardNumber("1234567890123456");
-    System.out.println(dal.getFirstName());
+        // write your code here
+
+       var res =_SL.Users.authenticateUser("1234507890123456", "123556");
+       System.out.println(res);
     }
 }
