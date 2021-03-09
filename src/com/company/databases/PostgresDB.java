@@ -2,13 +2,13 @@ package com.company.databases;
 
 import com.company.databases.interfaces.IDB;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class PostgresDB implements IDB {
-    private PostgresDB() {
+    public PostgresDB() {
     }
 
     private static class PostgressDBSingleton {
@@ -22,16 +22,18 @@ public class PostgresDB implements IDB {
     @Override
     public Connection getConnection() throws SQLException, ClassNotFoundException {
         //path to database
-        String connectionUrl = "jdbc:postgresql://localhost:5432/BankDB";
+        String connectionUrl = "jdbc:postgresql://localhost:1433/HW5";
         try {
             Class.forName("org.postgresql.Driver");
-            return DriverManager.getConnection(connectionUrl, "postgres", "Famouz13");
+            return DriverManager.getConnection(connectionUrl, "postgres", "123");
 
         } catch (Exception e) {
             System.out.println(e);
             throw e;
         }
     }
+
+
 
 }
 
