@@ -8,6 +8,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String phone;
+    private String password;
 
     /**
      * this constructor used for creating new users
@@ -17,11 +18,12 @@ public class User {
      * @param lastName
      * @param phone
      */
-    public User(String iin, String firstName, String lastName, String phone) {
+    public User(String iin, String firstName, String lastName, String phone, String password) {
         this.IIN = iin;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
+        this.password = password;
     }
 
     /**
@@ -33,8 +35,8 @@ public class User {
      * @param lastName
      * @param phone
      */
-    public User(int id, String iin, String firstName, String lastName, String phone) {
-        this(iin, firstName, lastName, phone);
+    public User(int id, String iin, String firstName, String lastName, String phone, String password) {
+        this(iin, firstName, lastName, phone, password);
         this.userID = id;
     }
 
@@ -74,5 +76,13 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

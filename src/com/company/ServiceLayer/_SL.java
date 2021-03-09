@@ -11,11 +11,11 @@ public class _SL {
      */
     public static class Users {
 
-        public static User authenticateUser(String cardNumber, String PIN) {
-            var cardPIN = _DAL.Cards.getPINByCardNumber(cardNumber);
+        public static User authenticateUser(String phone, String password) {
+            var user = _DAL.Users.byPhone(phone);
 
-            if(cardPIN != null && PIN.equals(cardPIN)) {
-                return  _DAL.Users.byCardNumber(cardNumber);
+            if (password != null && password.equals(user.getPassword())) {
+                return user;
             }
             return null;
         }

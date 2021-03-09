@@ -17,6 +17,27 @@ public class _DAL {
      */
     public static class Users {
         /**
+         * @param phone of user which you want to get
+         * @return if successful user instance otherwise null
+         */
+
+        public static User byPhone(String phone) {
+            try (var conn = PostgresDB.getInstance().getConnection()) {
+                PreparedStatement prt = conn.prepareStatement("SELECT*FROM Users WHERE Phone = ?");
+                prt.setString(1, phone);
+
+                ResultSet rs = prt.executeQuery();
+                if (rs.next())
+                    return createUserFromRS(rs);
+
+                return null;
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+                return null;
+            }
+        }
+
+        /**
          * @param userID id of user which you want to get
          * @return if successful user instance otherwise null
          */
@@ -72,7 +93,8 @@ public class _DAL {
                 String firstName = rs.getString(3);
                 String lastName = rs.getString(4);
                 String phone = rs.getString(5);
-                return new User(id, IIN, firstName, lastName, phone);
+                String password = rs.getString(6);
+                return new User(id, IIN, firstName, lastName, phone, password);
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
                 return null;
