@@ -9,6 +9,7 @@ import java.sql.SQLException;
 
 public class PostgresDB implements IDB {
     private PostgresDB() {
+
     }
 
     private static class PostgressDBSingleton {
