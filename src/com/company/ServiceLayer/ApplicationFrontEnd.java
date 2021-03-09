@@ -117,7 +117,7 @@ public class ApplicationFrontEnd {
 
         var res =_SL.Users.authenticateUser(phone_login, pw);
         if(res!=null){
-            System.out.println("SUCCESS!");
+            System.out.println("Loading...\n");
 LoginFrontEnd.start();
         }
         else{

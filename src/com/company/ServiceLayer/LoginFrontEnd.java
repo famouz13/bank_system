@@ -6,8 +6,11 @@ import com.company.DataAccessLayer._DAL.Users;
 import com.company.ServiceLayer.ApplicationFrontEnd;
 import java.util.Scanner;
 
+import static com.company.DataAccessLayer._DAL.Cards.createNewUserCard;
 import static com.company.ServiceLayer.ApplicationFrontEnd.phone_login;
 import static com.company.DataAccessLayer._DAL.Users.byPhone;
+import static com.company.ServiceLayer._SL.Cards.generateCardNumber;
+import static com.company.ServiceLayer._SL.Cards.generatePIN;
 
 
 public class LoginFrontEnd {
@@ -29,10 +32,10 @@ public class LoginFrontEnd {
             System.out.println(ANSI_BLUE + "Hello,  "+ byPhone(phone_login).getFirstName()+" " +byPhone(phone_login).getLastName() + "! " + ANSI_RESET);
             System.out.println();
             System.out.println(
-                    ANSI_GREEN + "1 |  All transactions" + '\n' +
-                            ANSI_GREEN + "2 |  Take credit" + '\n' +
+                    ANSI_GREEN + "1 | Create new card" + '\n' +
+                            ANSI_GREEN + "2 | Take credit" + '\n' +
                             "3 | Pay for credit\n" +
-                            "4 | Create new card\n" +
+                            "4 | All transactions\n" +
                             "5 | Make transaction by phone\n" +
                             "6 | Change PIN code \n" +
                             ANSI_RED + "0 | Exit");
@@ -40,20 +43,25 @@ public class LoginFrontEnd {
             int numberchoice = scanner.nextInt();
             switch (numberchoice) {
                 case 0 -> exit();
+                case 1 -> createCard();
+                case 2 -> exit();
+                case 3 -> exit();
+                case 4 -> exit();
+                case 5 -> exit();
+                case 6 -> exit();
 
                 default -> System.out.println(ANSI_RED + "Wrong input type!");
             }
         }
 
-
-
-
-
-
-
-
-
-
+    }
+    public static void createCard(){
+        String newcard = generateCardNumber();
+        String pin = generatePIN();
+        System.out.println(ANSI_PURPLE+"Please choose which card do you prefer: \n 1 - HalykBank \n2 - Kaspi");
+        Integer typeCardid=scanner.nextInt();
+        createNewUserCard(newcard, pin, typeCardid, byPhone(phone_login).getUserID() );
+        System.out.println("SUCCESS! Card was created...\n\n");
     }
     private static void exit() {
         System.exit(0);

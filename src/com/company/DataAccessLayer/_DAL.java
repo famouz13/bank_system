@@ -180,16 +180,16 @@ public class _DAL {
          * @param newCard card instance with initialized cardNumber, pin, cardTypeID, userID fields
          * @return if successful true otherwise false
          */
-        public static boolean createNewUserCard(int userID, Card newCard) {
+        public static boolean createNewUserCard( String Cardnumber, String pin, Integer typeid, Integer userid) {
             try (var conn = PostgresDB.getInstance().getConnection()) {
 
                 PreparedStatement prt = conn.prepareStatement("  INSERT INTO Cards(CardNumber,PIN,Balance,CardTypeID,UserID) VALUES(?,?,?,?,?)");
 
-                prt.setString(1, newCard.getCardNumber());
-                prt.setString(2, newCard.getPIN());
+                prt.setString(1, Cardnumber);
+                prt.setString(2, pin);
                 prt.setDouble(3, 0);
-                prt.setInt(4, newCard.getCardTypeID());
-                prt.setInt(5, newCard.getUserID());
+                prt.setInt(4, typeid);
+                prt.setInt(5, userid);
                 prt.executeUpdate();
 
                 return true;
