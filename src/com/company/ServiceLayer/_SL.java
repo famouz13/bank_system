@@ -14,7 +14,7 @@ public class _SL {
         public static User authenticateUser(String phone, String password) {
             var user = _DAL.Users.byPhone(phone);
 
-            if (password != null && password.equals(user.getPassword())) {
+            if (user != null && password.equals(user.getPassword())) {
                 return user;
             }
             return null;
