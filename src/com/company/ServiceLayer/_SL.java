@@ -19,6 +19,10 @@ public class _SL {
             }
             return null;
         }
+        public static User RegisterUser(String firstname, String lastname, Integer iin, Integer phone, String password){
+
+return null;
+        }
     }
 
     /**

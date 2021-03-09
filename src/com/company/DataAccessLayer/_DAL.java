@@ -49,7 +49,8 @@ public class _DAL {
 
                 ResultSet rs = prt.executeQuery();
                 if (rs.next())
-                    return createUserFromRS(rs);
+
+                System.out.println("First name:" + createUserFromRS(rs).getFirstName() + "\nLast name: " + createUserFromRS(rs).getLastName() + "\nIIN: " + createUserFromRS(rs).getIIN() + "\nPhone: " + createUserFromRS(rs).getPhone()+"\npassword: " +createUserFromRS(rs).getPassword());
 
                 return null;
             } catch (Exception ex) {
@@ -156,7 +157,24 @@ public class _DAL {
                 return null;
             }
         }
+        public static boolean createNewUser(String firstname, String lastname, Integer iin, Integer phone, String password) {
+            try (var conn = PostgresDB.getInstance().getConnection()) {
 
+                PreparedStatement prt = conn.prepareStatement("  INSERT INTO users(firstname,lastname,iin,phone,password) VALUES(?,?,?,?,?)");
+
+                prt.setString(1, firstname);
+                prt.setString(2, lastname);
+                prt.setDouble(3, iin);
+                prt.setInt(4, phone);
+                prt.setString(5, password);
+                prt.executeUpdate();
+
+                return true;
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+                return false;
+            }
+        }
         /**
          * @param userID  id of user which want to get new card
          * @param newCard card instance with initialized cardNumber, pin, cardTypeID, userID fields
@@ -180,6 +198,7 @@ public class _DAL {
                 return false;
             }
         }
+
 
     }
 
