@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class _DAL {
@@ -16,6 +17,26 @@ public class _DAL {
      * this class provides methods for working with users table
      */
     public static class Users {
+
+        public static boolean AddNew(User user) {
+            try (var conn = PostgresDB.getInstance().getConnection()) {
+                PreparedStatement prt = conn.prepareStatement("INSERT INTO Users(IIN,firstName,lastName,Phone,Password)\n" +
+                        "VALUES(?,?,?,?,?)");
+                prt.setString(1, user.getIIN());
+                prt.setString(2, user.getFirstName());
+                prt.setString(3, user.getLastName());
+                prt.setString(4, user.getPhone());
+                prt.setString(5, user.getPassword());
+
+                int rows = prt.executeUpdate();
+
+                return rows == 1;
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+                return false;
+            }
+        }
+
         /**
          * @param phone of user which you want to get
          * @return if successful user instance otherwise null
@@ -140,6 +161,34 @@ public class _DAL {
             }
         }
 
+
+        public static Card byID(int ID) {
+            try (var conn = PostgresDB.getInstance().getConnection()) {
+                PreparedStatement prt = conn.prepareStatement("SELECT*FROM cardsandtypes WHERE cardid = ?");
+                prt.setInt(1, ID);
+
+                ResultSet rs = prt.executeQuery();
+
+                if (rs.next()) {
+                    var card = new Card(
+                            rs.getInt(1),
+                            rs.getString(2),
+                            rs.getString(3),
+                            rs.getDouble(4),
+                            rs.getInt(5),
+                            rs.getInt(7));
+
+                    card.setCardType(new CardType(rs.getInt(5), rs.getString(6)));
+                    return card;
+                }
+                return null;
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+                return null;
+            }
+        }
+
+
         public static String getPINByCardNumber(String cardNumber) {
             try (var conn = PostgresDB.getInstance().getConnection()) {
                 PreparedStatement prt = conn.prepareStatement("SELECT PIN from Cards WHERE CardNumber = ?");
@@ -158,18 +207,17 @@ public class _DAL {
         }
 
         /**
-         * @param userID  id of user which want to get new card
          * @param newCard card instance with initialized cardNumber, pin, cardTypeID, userID fields
          * @return if successful true otherwise false
          */
-        public static boolean createNewUserCard(int userID, Card newCard) {
+        public static boolean createNewUserCard(Card newCard) {
             try (var conn = PostgresDB.getInstance().getConnection()) {
 
-                PreparedStatement prt = conn.prepareStatement("  INSERT INTO Cards(CardNumber,PIN,Balance,CardTypeID,UserID) VALUES(?,?,?,?,?)");
+                PreparedStatement prt = conn.prepareStatement("INSERT INTO Cards(CardNumber,PIN,Balance,CardTypeID,UserID) VALUES(?,?,?,?,?)");
 
                 prt.setString(1, newCard.getCardNumber());
                 prt.setString(2, newCard.getPIN());
-                prt.setDouble(3, 0);
+                prt.setBigDecimal(3, BigDecimal.valueOf(0));
                 prt.setInt(4, newCard.getCardTypeID());
                 prt.setInt(5, newCard.getUserID());
                 prt.executeUpdate();
@@ -218,22 +266,31 @@ public class _DAL {
         }
 
         /**
-         * @param userID    id of user which want to get new card
-         * @param newCredit credit instance with initialized start date, end date, percent, amount fields
+         * @param newCredit credit instance with initialized userid, start date, end date, percent, amount fields
          * @return if successful - true, otherwise - false
          */
-        public static boolean addNewCredit(int userID, Credit newCredit) {
+        public static boolean addNewCredit(Credit newCredit) {
             try (var conn = PostgresDB.getInstance().getConnection()) {
 
-                var prt = conn.prepareStatement("INSERT INTO Credits(userid,startdate,enddate,creditpercent,creditamount,loanbalance) VALUES(?, ?, ?,?,?,?)");
+                var prt = conn.prepareStatement("INSERT INTO Credits(userid,startdate,enddate,creditpercent,fullamount,loanbalance) VALUES(?, ?, ?,?,?,?)");
 
-                prt.setInt(1, userID);
-                prt.setDate(2, (Date) newCredit.getStartDate());
-                prt.setDate(3, (Date) newCredit.getEndDate());
+                prt.setInt(1, newCredit.getUserID());
+                prt.setDate(2, Date.valueOf(LocalDate.now()));
+                prt.setDate(3, Date.valueOf(LocalDate.now().plusYears(newCredit.getEndDate().getYear())));
                 prt.setFloat(4, newCredit.getPercent());
                 prt.setDouble(5, newCredit.getFullAmount());
-                prt.setDouble(5, newCredit.getFullAmount());
+                prt.setDouble(6, newCredit.getLoanBalance());
                 prt.executeUpdate();
+
+
+                var card = _DAL.Cards.byUserID(newCredit.getUserID());
+                if (card.stream().findFirst().orElse(null) == null)
+                    return false;
+
+                var pst2 = conn.prepareStatement("UPDATE Cards SET Balance = Balance + ? WHERE CardID = ?");
+                pst2.setBigDecimal(1, BigDecimal.valueOf(newCredit.getFullAmount()));
+                pst2.setInt(2, card.stream().findFirst().orElse(null).getCardID());
+                pst2.executeUpdate();
 
                 return true;
             } catch (Exception ex) {
@@ -247,11 +304,11 @@ public class _DAL {
          * @param creditPayment creditPayment instance with initialized fields
          * @return if successful - true, otherwise - false
          */
-        public static boolean payCredit(int creditID, CreditPayment creditPayment) {
+        public static boolean payCredit(CreditPayment creditPayment) {
             try (var conn = PostgresDB.getInstance().getConnection()) {
 
                 var cstmt = conn.prepareCall("CALL payForCredit(?,?)");
-                cstmt.setInt(1, creditID);
+                cstmt.setInt(1, creditPayment.getCreditID());
                 cstmt.setBigDecimal(2, BigDecimal.valueOf(creditPayment.getPaymentAmount()));
 
                 cstmt.executeUpdate();
@@ -304,12 +361,15 @@ public class _DAL {
          */
         public static boolean transfer(Transaction transaction) {
             try (var conn = PostgresDB.getInstance().getConnection()) {
+                var cstmt = conn.prepareCall("CALL sp_transfer(?,?,?,?,?,?)");
+                cstmt.setInt(1, transaction.getFromUserID());
+                cstmt.setInt(2, transaction.getToUserID());
+                cstmt.setString(3, transaction.getFromCardNumber());
+                cstmt.setString(4, transaction.getToCardNumber());
+                cstmt.setBigDecimal(5, BigDecimal.valueOf(transaction.getAmount()));
+                cstmt.setString(6, transaction.getTransactionComment());
 
-//                var cstmt = conn.prepareCall("CALL transfer(?,?)");
-//
-//
-//                cstmt.executeUpdate();
-//                cstmt.close();
+                cstmt.executeUpdate();
                 return true;
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
@@ -317,25 +377,6 @@ public class _DAL {
             }
         }
 
-        /**
-         * @param userID id of an user for which you want change balance (add or remove)
-         * @param amount amount of balance change in $
-         * @return
-         */
-        public static boolean changeBalance(int userID, double amount) {
-            try (var conn = PostgresDB.getInstance().getConnection()) {
-
-//                var cstmt = conn.prepareCall("CALL payForCredit(?,?)");
-//
-//
-//                cstmt.executeUpdate();
-//                cstmt.close();
-                return true;
-            } catch (Exception ex) {
-                System.out.println(ex.getMessage());
-                return false;
-            }
-        }
 
         /**
          * @param userID - id of user which credits you want to get

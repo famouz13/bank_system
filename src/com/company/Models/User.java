@@ -85,4 +85,12 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @Override
+    public String toString() {
+        return String.format("----------------------\n" +
+                        "Info: \nIIN: %s \nFirst name: %s \nLast name: %s \nPhone: %s \nPassword: %s \n"
+                        + "----------------------\n",
+                getIIN(), getFirstName(), getLastName(), getPhone(), getPassword());
+    }
 }

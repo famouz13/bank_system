@@ -19,6 +19,15 @@ public class Credit {
         this.fullAmount = fullAmount;
     }
 
+    public Credit(int userID, Date startDate, Date endDate, float percent, double fullAmount, double loanBalance) {
+        this.userID = userID;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.percent = percent;
+        this.fullAmount = fullAmount;
+        this.loanBalance = loanBalance;
+    }
+
     public Credit(int creditID, int userID, Date startDate, Date endDate, float percent, double fullAmount, double loanBalance) {
         this(userID, startDate, endDate, percent, fullAmount);
         this.creditID = creditID;
@@ -75,5 +84,11 @@ public class Credit {
 
     public void setLoanBalance(double loanBalance) {
         this.loanBalance = loanBalance;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ID: %d | Full amount: %f| Percent: %f| StartDate: %s| EndDate: %s| loanBalance: %s", getCreditID(),
+                getFullAmount(), getPercent(), getStartDate().toString(), getEndDate().toString(), getLoanBalance());
     }
 }
