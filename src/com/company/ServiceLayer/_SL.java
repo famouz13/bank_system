@@ -3,8 +3,6 @@ package com.company.ServiceLayer;
 import com.company.DataAccessLayer._DAL;
 import com.company.Models.User;
 
-import java.time.LocalDateTime;
-
 public class _SL {
     /**
      * this class provides helper methods for work with users
