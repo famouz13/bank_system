@@ -69,4 +69,9 @@ public class Card {
     public void setCardType(CardType cardType) {
         this.cardType = cardType;
     }
+
+    @Override
+    public String toString() {
+        return String.format("ID: %d|Card Number: %s| PIN: %s| Balance: %f| Type: %s", getCardID(), getCardNumber(), this.getPIN(), getBalance(), getCardType().getCardTypeName());
+    }
 }

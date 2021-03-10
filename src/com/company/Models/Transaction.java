@@ -13,11 +13,23 @@ public class Transaction {
     private User fromUser;
     private User toUser;
 
+    private String fromCardNumber;
+    private String toCardNumber;
+
 
     public Transaction(int fromUserID, int toUserID, Date transactionDate, double amount, String transactionComment) {
         this.fromUserID = fromUserID;
         this.toUserID = toUserID;
         this.transactionDate = transactionDate;
+        this.amount = amount;
+        this.transactionComment = transactionComment;
+    }
+
+    public Transaction(int fromUserID, int toUserID, String fromCardNumber, String toCardNumber, double amount, String transactionComment) {
+        this.fromUserID = fromUserID;
+        this.toUserID = toUserID;
+        this.toCardNumber = toCardNumber;
+        this.fromCardNumber = fromCardNumber;
         this.amount = amount;
         this.transactionComment = transactionComment;
     }
@@ -69,5 +81,28 @@ public class Transaction {
 
     public void setFromUser(User fromUser) {
         this.fromUser = fromUser;
+    }
+
+    public String toString() {
+        return String.format("From: %s | To: %s | Amount: %f | Date: %s | Comment: %s",
+                getFromUser().getFirstName() + " " + getFromUser().getLastName(),
+                getToUser().getFirstName() + " " + getToUser().getLastName(),
+                getAmount(), getTransactionDate(), getTransactionComment());
+    }
+
+    public String getToCardNumber() {
+        return toCardNumber;
+    }
+
+    public void setToCardNumber(String toCardNumber) {
+        this.toCardNumber = toCardNumber;
+    }
+
+    public String getFromCardNumber() {
+        return fromCardNumber;
+    }
+
+    public void setFromCardNumber(String fromCardNumber) {
+        this.fromCardNumber = fromCardNumber;
     }
 }

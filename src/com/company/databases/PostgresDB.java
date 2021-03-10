@@ -23,10 +23,10 @@ public class PostgresDB implements IDB {
     @Override
     public Connection getConnection() throws SQLException, ClassNotFoundException {
         //path to database
-        String connectionUrl = "jdbc:postgresql://localhost:5432/BankDB";
+        String connectionUrl = "jdbc:postgresql://localhost:5432/bank";
         try {
             Class.forName("org.postgresql.Driver");
-            return DriverManager.getConnection(connectionUrl, "postgres", "Famouz13");
+            return DriverManager.getConnection(connectionUrl, "postgres", "9790");
 
         } catch (Exception e) {
             System.out.println(e);
