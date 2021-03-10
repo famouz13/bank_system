@@ -8,6 +8,11 @@ public class CreditPayment {
     private double paymentAmount;
     private Date paymentDate;
 
+    public CreditPayment(int creditID, double paymentAmount) {
+        this.paymentAmount = paymentAmount;
+        this.creditID = creditID;
+    }
+
     public CreditPayment(int creditID, double paymentAmount, Date paymentDate) {
         this.creditID = creditID;
         this.paymentAmount = paymentAmount;
@@ -33,5 +38,10 @@ public class CreditPayment {
 
     public Date getPaymentDate() {
         return paymentDate;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Amount: %f | Date: %s", getPaymentAmount(), getPaymentDate());
     }
 }
